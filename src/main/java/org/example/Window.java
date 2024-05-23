@@ -8,12 +8,9 @@ import org.example.renderer.buffer.VertexBuffer;
 import org.example.renderer.shader.FragmentShader;
 import org.example.renderer.shader.ShaderProgram;
 import org.example.renderer.shader.VertexShader;
-import org.example.renderer.texture.Texture;
-import org.example.utility.ImmutableVector3f;
 import org.joml.Math;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
-import org.lwjgl.glfw.GLFW;
 import org.lwjgl.opengl.GL;
 
 import static org.lwjgl.glfw.GLFW.*;
@@ -24,13 +21,12 @@ public class Window {
     private int width;
     private int height;
 
-    private VertexArray vertexArray;
-    private VertexBuffer vertexBuffer;
-    private Texture texture1;
-    private Texture texture2;
-    private IndexBuffer indexBuffer;
-    private ShaderProgram shaderProgram;
-    private Vector3f[] cubePositions;
+    private VertexArray objectArray;
+    private VertexArray lightArray;
+    private ShaderProgram objectShader;
+    private ShaderProgram lightShader;
+    private Vector3f lightPosition;
+
     private double deltaTime = 0;
     private double lastFrame = 0;
     private double lastX;
@@ -75,94 +71,75 @@ public class Window {
 
     private void init() {
         float[] vertices = {
-                -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
-                0.5f, -0.5f, -0.5f,  1.0f, 0.0f,
-                0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-                0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-                -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
-                -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
+                -0.5f, -0.5f, -0.5f,
+                0.5f, -0.5f, -0.5f,
+                0.5f,  0.5f, -0.5f,
+                0.5f,  0.5f, -0.5f,
+                -0.5f,  0.5f, -0.5f,
+                -0.5f, -0.5f, -0.5f,
 
-                -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-                0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
-                0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
-                0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
-                -0.5f,  0.5f,  0.5f,  0.0f, 1.0f,
-                -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+                -0.5f, -0.5f,  0.5f,
+                0.5f, -0.5f,  0.5f,
+                0.5f,  0.5f,  0.5f,
+                0.5f,  0.5f,  0.5f,
+                -0.5f,  0.5f,  0.5f,
+                -0.5f, -0.5f,  0.5f,
 
-                -0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-                -0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-                -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-                -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-                -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-                -0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+                -0.5f,  0.5f,  0.5f,
+                -0.5f,  0.5f, -0.5f,
+                -0.5f, -0.5f, -0.5f,
+                -0.5f, -0.5f, -0.5f,
+                -0.5f, -0.5f,  0.5f,
+                -0.5f,  0.5f,  0.5f,
 
-                0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-                0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-                0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-                0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-                0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-                0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+                0.5f,  0.5f,  0.5f,
+                0.5f,  0.5f, -0.5f,
+                0.5f, -0.5f, -0.5f,
+                0.5f, -0.5f, -0.5f,
+                0.5f, -0.5f,  0.5f,
+                0.5f,  0.5f,  0.5f,
 
-                -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-                0.5f, -0.5f, -0.5f,  1.0f, 1.0f,
-                0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
-                0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
-                -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-                -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+                -0.5f, -0.5f, -0.5f,
+                0.5f, -0.5f, -0.5f,
+                0.5f, -0.5f,  0.5f,
+                0.5f, -0.5f,  0.5f,
+                -0.5f, -0.5f,  0.5f,
+                -0.5f, -0.5f, -0.5f,
 
-                -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
-                0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-                0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-                0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-                -0.5f,  0.5f,  0.5f,  0.0f, 0.0f,
-                -0.5f,  0.5f, -0.5f,  0.0f, 1.0f
+                -0.5f,  0.5f, -0.5f,
+                0.5f,  0.5f, -0.5f,
+                0.5f,  0.5f,  0.5f,
+                0.5f,  0.5f,  0.5f,
+                -0.5f,  0.5f,  0.5f,
+                -0.5f,  0.5f, -0.5f
         };
 
-        /*int[] indices = {
-                0, 1, 3, // first triangle
-                1, 2, 3  // second triangle
-        };*/
-
-        String image1 = "src/main/resources/images/container.jpg";
-        String image2 = "src/main/resources/images/awesomeface.png";
+        BufferLayout layout = new BufferLayout.Builder().addFloats(3).build();
+        VertexBuffer vertexBuffer = new VertexBuffer.Builder().add(vertices).build();
+        objectArray = new VertexArray(vertexBuffer, layout);
 
         String vertexShaderPath = "src/main/resources/shaders/vertexShader.glsl";
         String fragmentShaderPath = "src/main/resources/shaders/fragmentShader.glsl";
-
-        BufferLayout layout = new BufferLayout.Builder().
-                addFloats(3).addFloats(2).build();
-
-        indexBuffer = new IndexBuffer(new int[] { 0, 1, 3, 1, 2, 3});
-        vertexBuffer = new VertexBuffer.Builder().add(vertices).build();
-        vertexArray = new VertexArray(vertexBuffer, layout);
-
-        vertexArray.bindIndexBuffer(indexBuffer);
-
-        texture1 = new Texture(image1);
-        texture2 = new Texture(image2);
-
         VertexShader vertexShader = new VertexShader(vertexShaderPath);
         FragmentShader fragmentShader = new FragmentShader(fragmentShaderPath);
+        objectShader = new ShaderProgram(vertexShader, fragmentShader);
 
-        shaderProgram = new ShaderProgram(vertexShader, fragmentShader);
+        BufferLayout lightLayout = new BufferLayout.Builder().addFloats(3).build();
+        VertexBuffer lightBuffer = new VertexBuffer.Builder().add(vertices).build();
+        lightArray = new VertexArray(lightBuffer, lightLayout);
 
-        shaderProgram.setUniform("texture1", 0);
-        shaderProgram.setUniform("texture2", 1);
+        vertexShaderPath = "src/main/resources/shaders/vertexShader.glsl";
+        fragmentShaderPath = "src/main/resources/shaders/lightSourceFragmentShader.glsl";
+        vertexShader = new VertexShader(vertexShaderPath);
+        fragmentShader = new FragmentShader(fragmentShaderPath);
+        lightShader = new ShaderProgram(vertexShader, fragmentShader);
 
-        Renderer.setClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+        objectShader.setUniform("objectColor", 1, 0.5f, 0.31f);
+        objectShader.setUniform("lightColor", 1, 1, 1);
 
-        cubePositions = new Vector3f[] {
-                new Vector3f( 0.0f,  0.0f,  0.0f),
-                new Vector3f( 2.0f,  5.0f, -15.0f),
-                new Vector3f(-1.5f, -2.2f, -2.5f),
-                new Vector3f(-3.8f, -2.0f, -12.3f),
-                new Vector3f( 2.4f, -0.4f, -3.5f),
-                new Vector3f(-1.7f,  3.0f, -7.5f),
-                new Vector3f( 1.3f, -2.0f, -2.5f),
-                new Vector3f( 1.5f,  2.0f, -2.5f),
-                new Vector3f( 1.5f,  0.2f, -1.5f),
-                new Vector3f(-1.3f,  1.0f, -1.5f)
-        };
+        lightPosition = new Vector3f(1.2f, 1.0f, 2.0f);
+
+        Renderer.setClearColor(0, 0, 0, 1);
     }
 
     private void loop() {
@@ -177,19 +154,18 @@ public class Window {
 
         Matrix4f projection = new Matrix4f().perspective(Math.toRadians(camera.fov()), (float)width / (float)height, 0.1f, 100.0f);
 
-        shaderProgram.setUniform("view", camera.viewMatrix());
-        shaderProgram.setUniform("projection", projection);
 
-        for(int i = 0; i < 10; i++) {
-            float angle = 20.0f * i;
+        Matrix4f model = new Matrix4f().translate(lightPosition).scale(0.2f);
+        lightShader.setUniform("model", model);
+        lightShader.setUniform("view", camera.viewMatrix());
+        lightShader.setUniform("projection", projection);
+        Renderer.draw(lightArray, lightShader);
 
-            Matrix4f model = new Matrix4f()
-                    .translate(cubePositions[i]).
-                    rotate(Math.toRadians(angle), new Vector3f(1.0f, 0.3f, 0.5f).normalize());
-            shaderProgram.setUniform("model", model);
-
-            Renderer.draw(vertexArray, shaderProgram, texture1, texture2);
-        }
+        model = new Matrix4f();
+        objectShader.setUniform("model", model);
+        objectShader.setUniform("view", camera.viewMatrix());
+        objectShader.setUniform("projection", projection);
+        Renderer.draw(objectArray, objectShader);
 
         glfwSwapBuffers(window);
         glfwPollEvents();

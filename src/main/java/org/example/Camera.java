@@ -54,7 +54,7 @@ public class Camera {
     }
 
     public void processMouseMovement(double xOffset, double yOffset, double deltaTime) {
-        yaw += xOffset * mouseSensitivity * deltaTime;
+        yaw += (xOffset * mouseSensitivity * deltaTime) % 360;
         pitch += yOffset * mouseSensitivity * deltaTime;
 
         if (pitch > 89)

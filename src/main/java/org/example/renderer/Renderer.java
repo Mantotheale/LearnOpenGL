@@ -8,6 +8,16 @@ import org.example.renderer.texture.Texture;
 import static org.lwjgl.opengl.GL11.*;
 
 public class Renderer {
+    public static void draw(VertexArray vertexArray, ShaderProgram shaderProgram) {
+        shaderProgram.bind();
+        vertexArray.bind();
+
+        glDrawArrays(GL_TRIANGLES, 0, vertexArray.count());
+
+        vertexArray.unbind();
+        shaderProgram.unbind();
+    }
+
     public static void draw(VertexArray vertexArray, ShaderProgram shaderProgram, Texture texture1, Texture texture2) {
         shaderProgram.bind();
         vertexArray.bind();
