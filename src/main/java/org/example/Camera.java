@@ -40,16 +40,16 @@ public class Camera {
         return fov;
     }
 
-    public void processKeyboard(Movement direction, float deltaTime) {
-        float velocity = movementSpeed * deltaTime;
+    public void processKeyboard(Movement direction, double deltaTime) {
+        double velocity = movementSpeed * deltaTime;
 
         switch (direction) {
-            case FORWARD -> position.add(MyVector3f.mul(front, velocity));
-            case BACKWARDS -> position.sub(MyVector3f.mul(front, velocity));
-            case RIGHT -> position.add(MyVector3f.mul(right, velocity));
-            case LEFT -> position.sub(MyVector3f.mul(right, velocity));
-            case UP -> position.add(MyVector3f.mul(up, velocity));
-            case DOWN -> position.sub(MyVector3f.mul(up, velocity));
+            case FORWARD -> position.add(MyVector3f.mul(front, (float) velocity));
+            case BACKWARDS -> position.sub(MyVector3f.mul(front, (float) velocity));
+            case RIGHT -> position.add(MyVector3f.mul(right, (float) velocity));
+            case LEFT -> position.sub(MyVector3f.mul(right, (float) velocity));
+            case UP -> position.add(MyVector3f.mul(up, (float) velocity));
+            case DOWN -> position.sub(MyVector3f.mul(up, (float) velocity));
         }
     }
 

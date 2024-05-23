@@ -31,8 +31,8 @@ public class Window {
     private IndexBuffer indexBuffer;
     private ShaderProgram shaderProgram;
     private Vector3f[] cubePositions;
-    private float deltaTime = 0;
-    private float lastFrame = 0;
+    private double deltaTime = 0;
+    private double lastFrame = 0;
     private double lastX;
     private double lastY;
     private boolean firstMouse = true;
@@ -50,6 +50,17 @@ public class Window {
         window = glfwCreateWindow(width, height, "Learn OpenGL", 0, 0);
 
         if (window == 0) throw new RuntimeException("Failed to open a window");
+
+        glfwMakeContextCurrent(window);
+        GL.createCapabilities();
+        glfwSetFramebufferSizeCallback(window, this::framebuffer_size_callback);
+        glViewport(0, 0, width, height);
+        glEnable(GL_DEPTH_TEST);
+        glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+        glfwSetCursorPosCallback(window, this::mouse_callback);
+        glfwSetScrollCallback(window, this::scroll_callback);
+        lastX = (double) width / 2;
+        lastY = (double) height / 2;
     }
 
     public void run() {
@@ -63,17 +74,6 @@ public class Window {
     }
 
     private void init() {
-        glfwMakeContextCurrent(window);
-        GL.createCapabilities();
-        glfwSetFramebufferSizeCallback(window, this::framebuffer_size_callback);
-        glViewport(0, 0, width, height);
-        glEnable(GL_DEPTH_TEST);
-        glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-        glfwSetCursorPosCallback(window, this::mouse_callback);
-        glfwSetScrollCallback(window, this::scroll_callback);
-        lastX = (float) width / 2;
-        lastY = (float) height / 2;
-
         float[] vertices = {
                 -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
                 0.5f, -0.5f, -0.5f,  1.0f, 0.0f,
@@ -133,9 +133,7 @@ public class Window {
                 addFloats(3).addFloats(2).build();
 
         indexBuffer = new IndexBuffer(new int[] { 0, 1, 3, 1, 2, 3});
-        vertexBuffer = new VertexBuffer.Builder()
-                .add(vertices)
-                .build();
+        vertexBuffer = new VertexBuffer.Builder().add(vertices).build();
         vertexArray = new VertexArray(vertexBuffer, layout);
 
         vertexArray.bindIndexBuffer(indexBuffer);
@@ -153,7 +151,6 @@ public class Window {
 
         Renderer.setClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 
-
         cubePositions = new Vector3f[] {
                 new Vector3f( 0.0f,  0.0f,  0.0f),
                 new Vector3f( 2.0f,  5.0f, -15.0f),
@@ -169,7 +166,7 @@ public class Window {
     }
 
     private void loop() {
-        float currentFrame = (float) glfwGetTime();
+        double currentFrame = glfwGetTime();
         deltaTime = currentFrame - lastFrame;
         lastFrame = currentFrame;
 
@@ -208,17 +205,17 @@ public class Window {
         this.height = height;
     }
 
-    public void mouse_callback(long window, double xpos, double ypos) {
+    public void mouse_callback(long window, double xPos, double yPos) {
         if (firstMouse) {
-            lastX = xpos;
-            lastY = ypos;
+            lastX = xPos;
+            lastY = yPos;
             firstMouse = false;
         }
 
-        double xOffset = xpos - lastX;
-        double yOffset = lastY - ypos;
-        lastX = xpos;
-        lastY = ypos;
+        double xOffset = xPos - lastX;
+        double yOffset = lastY - yPos;
+        lastX = xPos;
+        lastY = yPos;
 
         camera.processMouseMovement(xOffset, yOffset, deltaTime);
     }
