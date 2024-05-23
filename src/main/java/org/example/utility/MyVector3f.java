@@ -1,5 +1,6 @@
 package org.example.utility;
 
+import org.joml.Math;
 import org.joml.Vector3f;
 
 public interface MyVector3f {
@@ -33,5 +34,13 @@ public interface MyVector3f {
 
     static Vector3f normalize(Vector3f v) {
         return v.normalize(new Vector3f());
+    }
+
+    static Vector3f fromEuler(double yaw, double pitch) {
+        return new Vector3f(
+                (float) (Math.cos(Math.toRadians(yaw)) * Math.cos(Math.toRadians(pitch))),
+                (float) Math.sin(Math.toRadians(pitch)),
+                (float) (Math.sin(Math.toRadians(yaw)) * Math.cos(Math.toRadians(pitch)))
+        ).normalize();
     }
 }

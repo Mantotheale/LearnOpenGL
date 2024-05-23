@@ -33,8 +33,8 @@ public class Window {
     private Vector3f[] cubePositions;
     private float deltaTime = 0;
     private float lastFrame = 0;
-    private float lastX;
-    private float lastY;
+    private double lastX;
+    private double lastY;
     private boolean firstMouse = true;
     private final Camera camera = new Camera();
 
@@ -210,22 +210,21 @@ public class Window {
 
     public void mouse_callback(long window, double xpos, double ypos) {
         if (firstMouse) {
-            lastX = (float) xpos;
-            lastY = (float) ypos;
+            lastX = xpos;
+            lastY = ypos;
             firstMouse = false;
         }
 
-        float xOffset = (float) xpos - lastX;
-        float yOffset = lastY - (float) ypos;
-        lastX = (float) xpos;
-        lastY = (float) ypos;
+        double xOffset = xpos - lastX;
+        double yOffset = lastY - ypos;
+        lastX = xpos;
+        lastY = ypos;
 
-        camera.processMouseMovement(xOffset, yOffset);
+        camera.processMouseMovement(xOffset, yOffset, deltaTime);
     }
 
     void scroll_callback(long window, double xoffset, double yOffset) {
-
-        camera.processMouseScroll((float) yOffset);
+        camera.processMouseScroll(yOffset, deltaTime);
     }
 
     public void processInput() {
@@ -240,5 +239,9 @@ public class Window {
             camera.processKeyboard(Camera.Movement.LEFT, deltaTime);
         if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
             camera.processKeyboard(Camera.Movement.RIGHT, deltaTime);
+        if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS)
+            camera.processKeyboard(Camera.Movement.UP, deltaTime);
+        if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)
+            camera.processKeyboard(Camera.Movement.DOWN, deltaTime);
     }
 }

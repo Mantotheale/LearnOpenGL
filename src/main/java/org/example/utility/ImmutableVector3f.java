@@ -9,40 +9,40 @@ public class ImmutableVector3f {
         vector = v;
     }
 
-    public ImmutableVector3f plus(Vector3f v) {
-        return new ImmutableVector3f(vector.add(v, new Vector3f()));
+    public ImmutableVector3f plus(Vector3f b) {
+        return new ImmutableVector3f(MyVector3f.plus(vector, b));
     }
 
-    public ImmutableVector3f plus(ImmutableVector3f v) {
-        return plus(v.vector);
+    public ImmutableVector3f plus(ImmutableVector3f b) {
+        return plus(b.vector);
     }
 
-    public ImmutableVector3f minus(Vector3f v) {
-        return new ImmutableVector3f(vector.sub(v, new Vector3f()));
+    public ImmutableVector3f minus(Vector3f b) {
+        return new ImmutableVector3f(MyVector3f.minus(vector, b));
     }
 
-    public ImmutableVector3f minus(ImmutableVector3f v) {
-        return minus(v.vector);
+    public ImmutableVector3f minus(ImmutableVector3f b) {
+        return minus(b.vector);
     }
 
-    public ImmutableVector3f cross(Vector3f v) {
-        return new ImmutableVector3f(vector.cross(v, new Vector3f()));
+    public ImmutableVector3f cross(Vector3f b) {
+        return new ImmutableVector3f(MyVector3f.cross(vector, b));
     }
 
-    public ImmutableVector3f cross(ImmutableVector3f v) {
-        return cross(v.vector);
+    public ImmutableVector3f cross(ImmutableVector3f b) {
+        return cross(b.vector);
     }
 
-    public float dot(Vector3f v) {
-        return vector.dot(v);
+    public float dot(Vector3f b) {
+        return vector.dot(b);
     }
 
-    public float dot(ImmutableVector3f v) {
-        return dot(v.vector);
+    public float dot(ImmutableVector3f b) {
+        return dot(b.vector);
     }
 
     public ImmutableVector3f normalize() {
-        return new ImmutableVector3f(vector.normalize(new Vector3f()));
+        return new ImmutableVector3f(MyVector3f.normalize(vector));
     }
 
     public Vector3f value() {
