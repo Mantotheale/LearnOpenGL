@@ -143,11 +143,20 @@ public class Window {
     }
 
     private float lightRadius = 1.5f;
+    private double last0 = 0;
+    private int count = 0;
 
     private void loop() {
         double currentFrame = glfwGetTime();
         deltaTime = currentFrame - lastFrame;
         lastFrame = currentFrame;
+
+        count++;
+        if (currentFrame - last0 > 1) {
+            System.out.println("FPS: " + count);
+            count = 0;
+            last0 = currentFrame;
+        }
 
         processInput();
 
