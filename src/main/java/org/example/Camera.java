@@ -36,6 +36,10 @@ public class Camera {
         return new Matrix4f().lookAt(position, MyVector3f.plus(position, front), up);
     }
 
+    public Vector3f position() {
+        return new Vector3f(position);
+    }
+
     public float fov() {
         return fov;
     }

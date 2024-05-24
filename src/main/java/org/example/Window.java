@@ -134,14 +134,15 @@ public class Window {
         fragmentShader = new FragmentShader(fragmentShaderPath);
         lightShader = new ShaderProgram(vertexShader, fragmentShader);
 
-        lightPosition = new Vector3f(1.2f, 1.0f, 2.0f);
+        //lightPosition = new Vector3f(1.2f, 1.0f, 2.0f);
 
         objectShader.setUniform("objectColor", 1, 0.5f, 0.31f);
         objectShader.setUniform("lightColor", 1, 1, 1);
-        objectShader.setUniform("lightPosition", lightPosition);
 
         Renderer.setClearColor(0, 0, 0, 1);
     }
+
+    private float lightRadius = 1.5f;
 
     private void loop() {
         double currentFrame = glfwGetTime();
@@ -156,6 +157,7 @@ public class Window {
         Matrix4f projection = new Matrix4f().perspective(Math.toRadians(camera.fov()), (float)width / (float)height, 0.1f, 100.0f);
 
 
+        Vector3f lightPosition = new Vector3f(2 * (float) Math.cos(glfwGetTime()), 0, 2 * (float) Math.sin(glfwGetTime()));
         Matrix4f model = new Matrix4f().translate(lightPosition).scale(0.2f);
         lightShader.setUniform("model", model);
         lightShader.setUniform("view", camera.viewMatrix());
@@ -166,6 +168,8 @@ public class Window {
         objectShader.setUniform("model", model);
         objectShader.setUniform("view", camera.viewMatrix());
         objectShader.setUniform("projection", projection);
+        objectShader.setUniform("lightPosition", lightPosition);
+        objectShader.setUniform("viewerPosition", camera.position());
         Renderer.draw(objectArray, objectShader);
 
         glfwSwapBuffers(window);
