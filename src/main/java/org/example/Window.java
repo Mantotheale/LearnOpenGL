@@ -36,6 +36,7 @@ public class Window {
     private final Camera camera = new Camera();
     private Texture texture1;
     private Texture texture2;
+    private Vector3f[] cubePositions;
 
     public Window() {
         if (!glfwInit()) throw new RuntimeException("Couldn't initialize GLFW");
@@ -153,7 +154,22 @@ public class Window {
         objectShader.setUniform("light.diffuse",  0.5f, 0.5f, 0.5f);
         objectShader.setUniform("light.specular", 1.0f, 1.0f, 1.0f);
 
+        objectShader.setUniform("light.direction", -0.2f, -1.0f, -0.3f);
+
         Renderer.setClearColor(0, 0, 0, 1);
+
+        cubePositions = new Vector3f[]{
+                new Vector3f( 0.0f,  0.0f,  0.0f),
+                new Vector3f( 2.0f,  5.0f, -15.0f),
+                new Vector3f(-1.5f, -2.2f, -2.5f),
+                new Vector3f(-3.8f, -2.0f, -12.3f),
+                new Vector3f( 2.4f, -0.4f, -3.5f),
+                new Vector3f(-1.7f,  3.0f, -7.5f),
+                new Vector3f( 1.3f, -2.0f, -2.5f),
+                new Vector3f( 1.5f,  2.0f, -2.5f),
+                new Vector3f( 1.5f,  0.2f, -1.5f),
+                new Vector3f(-1.3f,  1.0f, -1.5f)
+        };
     }
 
     private float lightRadius = 1.5f;
@@ -186,13 +202,20 @@ public class Window {
         lightShader.setUniform("projection", projection);
         Renderer.draw(lightArray, lightShader);
 
-        model = new Matrix4f();
-        objectShader.setUniform("model", model);
-        objectShader.setUniform("view", camera.viewMatrix());
-        objectShader.setUniform("projection", projection);
-        objectShader.setUniform("light.position", lightPosition);
-        objectShader.setUniform("viewerPosition", camera.position());
-        Renderer.draw(objectArray, objectShader, texture1, texture2);
+
+        for(int i = 0; i < 10; i++) {
+            float angle = 20.0f * i;
+
+            model = new Matrix4f().translate(cubePositions[i])
+                    .rotate(Math.toRadians(angle),new Vector3f(1.0f, 0.3f, 0.5f).normalize());
+            objectShader.setUniform("model", model);
+            objectShader.setUniform("view", camera.viewMatrix());
+            objectShader.setUniform("projection", projection);
+            objectShader.setUniform("viewerPosition", camera.position());
+            Renderer.draw(objectArray, objectShader, texture1, texture2);
+
+            glDrawArrays(GL_TRIANGLES, 0, 36);
+        }
 
         glfwSwapBuffers(window);
         glfwPollEvents();
