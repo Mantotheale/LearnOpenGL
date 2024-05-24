@@ -37,6 +37,7 @@ public class Window {
     private Texture texture1;
     private Texture texture2;
     private Vector3f[] cubePositions;
+    private Vector3f[] pointLightPositions;
 
     public Window() {
         if (!glfwInit()) throw new RuntimeException("Couldn't initialize GLFW");
@@ -150,15 +151,13 @@ public class Window {
         objectShader.setUniform("material.specular", 1);
         objectShader.setUniform("material.shininess", 32.0f);
 
-        objectShader.setUniform("light.ambient",  0.15f, 0.15f, 0.15f);
-        objectShader.setUniform("light.diffuse",  0.5f, 0.5f, 0.5f);
-        objectShader.setUniform("light.specular", 1.0f, 1.0f, 1.0f);
-
-        objectShader.setUniform("light.constant",  1);
-        objectShader.setUniform("light.linear",  0.09f);
-        objectShader.setUniform("light.quadratic", 0.032f);
+        objectShader.setUniform("directionalLight.direction",  -0.2f, -1, 0);
+        objectShader.setUniform("directionalLight.ambient",  0.15f, 0.15f, 0.15f);
+        objectShader.setUniform("directionalLight.diffuse",  0.5f, 0.5f, 0.5f);
+        objectShader.setUniform("directionalLight.specular", 1.0f, 1.0f, 1.0f);
 
         Renderer.setClearColor(0, 0, 0, 1);
+
 
         cubePositions = new Vector3f[]{
                 new Vector3f( 0.0f,  0.0f,  0.0f),
@@ -172,6 +171,64 @@ public class Window {
                 new Vector3f( 1.5f,  0.2f, -1.5f),
                 new Vector3f(-1.3f,  1.0f, -1.5f)
         };
+
+        pointLightPositions = new Vector3f[]{
+                new Vector3f( 0.7f,  0.2f,  2.0f),
+                new Vector3f( 2.3f, -3.3f, -4.0f),
+                new Vector3f(-4.0f,  2.0f, -12.0f),
+                new Vector3f( 0.0f,  0.0f, -3.0f)
+        };
+
+        objectShader.setUniform("pointLights[0].position", pointLightPositions[0]);
+
+        objectShader.setUniform("pointLights[0].ambient",  0.15f, 0.15f, 0.15f);
+        objectShader.setUniform("pointLights[0].diffuse",  0.5f, 0.5f, 0.5f);
+        objectShader.setUniform("pointLights[0].specular", 1.0f, 1.0f, 1.0f);
+
+        objectShader.setUniform("pointLights[0].constant",  1);
+        objectShader.setUniform("pointLights[0].linear",  0.09f);
+        objectShader.setUniform("pointLights[0].quadratic", 0.032f);
+
+        objectShader.setUniform("pointLights[1].position", pointLightPositions[1]);
+
+        objectShader.setUniform("pointLights[1].ambient",  0.15f, 0.15f, 0.15f);
+        objectShader.setUniform("pointLights[1].diffuse",  0.5f, 0.5f, 0.5f);
+        objectShader.setUniform("pointLights[1].specular", 1.0f, 1.0f, 1.0f);
+
+        objectShader.setUniform("pointLights[1].constant",  1);
+        objectShader.setUniform("pointLights[1].linear",  0.09f);
+        objectShader.setUniform("pointLights[1].quadratic", 0.032f);
+
+        objectShader.setUniform("pointLights[2].position", pointLightPositions[2]);
+
+        objectShader.setUniform("pointLights[2].ambient",  0.15f, 0.15f, 0.15f);
+        objectShader.setUniform("pointLights[2].diffuse",  0.5f, 0.5f, 0.5f);
+        objectShader.setUniform("pointLights[2].specular", 1.0f, 1.0f, 1.0f);
+
+        objectShader.setUniform("pointLights[2].constant",  1);
+        objectShader.setUniform("pointLights[2].linear",  0.09f);
+        objectShader.setUniform("pointLights[2].quadratic", 0.032f);
+
+        objectShader.setUniform("pointLights[3].position", pointLightPositions[3]);
+
+        objectShader.setUniform("pointLights[3].ambient",  0.15f, 0.15f, 0.15f);
+        objectShader.setUniform("pointLights[3].diffuse",  0.5f, 0.5f, 0.5f);
+        objectShader.setUniform("pointLights[3].specular", 1.0f, 1.0f, 1.0f);
+
+        objectShader.setUniform("pointLights[3].constant",  1);
+        objectShader.setUniform("pointLights[3].linear",  0.09f);
+        objectShader.setUniform("pointLights[3].quadratic", 0.032f);
+
+        objectShader.setUniform("flashLight.ambient",  0.15f, 0.15f, 0.15f);
+        objectShader.setUniform("flashLight.diffuse",  0.5f, 0.5f, 0.5f);
+        objectShader.setUniform("flashLight.specular", 1.0f, 1.0f, 1.0f);
+
+        objectShader.setUniform("flashLight.constant",  1);
+        objectShader.setUniform("flashLight.linear",  0.09f);
+        objectShader.setUniform("flashLight.quadratic", 0.032f);
+
+        objectShader.setUniform("flashLight.cutoff", Math.cos(Math.toRadians(12.5f)));
+        objectShader.setUniform("flashLight.outerCutoff", Math.cos(Math.toRadians(17.5f)));
     }
 
     private float lightRadius = 1.5f;
@@ -206,10 +263,19 @@ public class Window {
         Renderer.draw(lightArray, lightShader);
         */
 
-        objectShader.setUniform("light.position", camera.position());
-        objectShader.setUniform("light.direction", camera.front());
+        /*;
         objectShader.setUniform("light.cutoff", Math.cos(Math.toRadians(12.5f)));
-        objectShader.setUniform("light.outerCutoff", Math.cos(Math.toRadians(17.5f)));
+        objectShader.setUniform("light.outerCutoff", Math.cos(Math.toRadians(17.5f)));*/
+        for(int i = 0; i < 4; i++) {
+            Matrix4f model = new Matrix4f().translate(pointLightPositions[i]).scale(0.2f);
+            lightShader.setUniform("model", model);
+            lightShader.setUniform("view", camera.viewMatrix());
+            lightShader.setUniform("projection", projection);
+            Renderer.draw(objectArray, lightShader);
+        }
+
+        objectShader.setUniform("flashLight.position", camera.position());
+        objectShader.setUniform("flashLight.direction", camera.front());
 
         for(int i = 0; i < 10; i++) {
             float angle = 20.0f * i;
@@ -221,8 +287,6 @@ public class Window {
             objectShader.setUniform("projection", projection);
             objectShader.setUniform("viewerPosition", camera.position());
             Renderer.draw(objectArray, objectShader, texture1, texture2);
-
-            glDrawArrays(GL_TRIANGLES, 0, 36);
         }
 
         glfwSwapBuffers(window);
