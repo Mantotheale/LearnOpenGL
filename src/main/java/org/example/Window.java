@@ -150,7 +150,7 @@ public class Window {
         objectShader.setUniform("material.specular", 1);
         objectShader.setUniform("material.shininess", 32.0f);
 
-        objectShader.setUniform("light.ambient",  0.2f, 0.2f, 0.2f);
+        objectShader.setUniform("light.ambient",  0.15f, 0.15f, 0.15f);
         objectShader.setUniform("light.diffuse",  0.5f, 0.5f, 0.5f);
         objectShader.setUniform("light.specular", 1.0f, 1.0f, 1.0f);
 
@@ -197,19 +197,24 @@ public class Window {
 
         Matrix4f projection = new Matrix4f().perspective(Math.toRadians(camera.fov()), (float)width / (float)height, 0.1f, 100.0f);
 
-        Vector3f lightPosition = new Vector3f(1.7f * (float) Math.cos(glfwGetTime() / 4), 1.5f, 1.7f * (float) Math.sin(glfwGetTime() / 4));
+        /*Vector3f lightPosition = new Vector3f(1.7f * (float) Math.cos(glfwGetTime() / 4), 1.5f, 1.7f * (float) Math.sin(glfwGetTime() / 4));
         Matrix4f model = new Matrix4f().translate(lightPosition).scale(0.2f);
         lightShader.setUniform("model", model);
         lightShader.setUniform("view", camera.viewMatrix());
         lightShader.setUniform("projection", projection);
         objectShader.setUniform("light.position", lightPosition);
         Renderer.draw(lightArray, lightShader);
+        */
 
+        objectShader.setUniform("light.position", camera.position());
+        objectShader.setUniform("light.direction", camera.front());
+        objectShader.setUniform("light.cutoff", Math.cos(Math.toRadians(12.5f)));
+        objectShader.setUniform("light.outerCutoff", Math.cos(Math.toRadians(17.5f)));
 
         for(int i = 0; i < 10; i++) {
             float angle = 20.0f * i;
 
-            model = new Matrix4f().translate(cubePositions[i])
+            Matrix4f model = new Matrix4f().translate(cubePositions[i])
                     .rotate(Math.toRadians(angle),new Vector3f(1.0f, 0.3f, 0.5f).normalize());
             objectShader.setUniform("model", model);
             objectShader.setUniform("view", camera.viewMatrix());
