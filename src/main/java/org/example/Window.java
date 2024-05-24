@@ -134,10 +134,11 @@ public class Window {
         fragmentShader = new FragmentShader(fragmentShaderPath);
         lightShader = new ShaderProgram(vertexShader, fragmentShader);
 
+        lightPosition = new Vector3f(1.2f, 1.0f, 2.0f);
+
         objectShader.setUniform("objectColor", 1, 0.5f, 0.31f);
         objectShader.setUniform("lightColor", 1, 1, 1);
-
-        lightPosition = new Vector3f(1.2f, 1.0f, 2.0f);
+        objectShader.setUniform("lightPosition", lightPosition);
 
         Renderer.setClearColor(0, 0, 0, 1);
     }

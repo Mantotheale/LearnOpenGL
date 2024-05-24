@@ -1,6 +1,7 @@
 package org.example.renderer.shader;
 
 import org.joml.Matrix4f;
+import org.joml.Vector3f;
 import org.lwjgl.system.MemoryStack;
 
 import java.nio.FloatBuffer;
@@ -63,6 +64,12 @@ public class ShaderProgram {
     public void setUniform(String name, float x, float y, float z) {
         bind();
         glUniform3f(getUniformLocation(name), x, y, z);
+        unbind();
+    }
+
+    public void setUniform(String name, Vector3f value) {
+        bind();
+        glUniform3f(getUniformLocation(name), value.x, value.y, value.z);
         unbind();
     }
 
