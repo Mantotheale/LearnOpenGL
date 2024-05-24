@@ -136,8 +136,14 @@ public class Window {
 
         //lightPosition = new Vector3f(1.2f, 1.0f, 2.0f);
 
-        objectShader.setUniform("objectColor", 1, 0.5f, 0.31f);
-        objectShader.setUniform("lightColor", 1, 1, 1);
+        objectShader.setUniform("material.ambient", 1.0f, 0.5f, 0.31f);
+        objectShader.setUniform("material.diffuse", 1.0f, 0.5f, 0.31f);
+        objectShader.setUniform("material.specular", 0.5f, 0.5f, 0.5f);
+        objectShader.setUniform("material.shininess", 32.0f);
+
+        objectShader.setUniform("light.ambient",  0.2f, 0.2f, 0.2f);
+        objectShader.setUniform("light.diffuse",  0.5f, 0.5f, 0.5f);
+        objectShader.setUniform("light.specular", 1.0f, 1.0f, 1.0f);
 
         Renderer.setClearColor(0, 0, 0, 1);
     }
@@ -165,8 +171,19 @@ public class Window {
 
         Matrix4f projection = new Matrix4f().perspective(Math.toRadians(camera.fov()), (float)width / (float)height, 0.1f, 100.0f);
 
+        Vector3f lightColor = new Vector3f(
+                (float) Math.sin(glfwGetTime() * 2.0f),
+                (float) Math.sin(glfwGetTime() * 0.7f),
+                (float) Math.sin(glfwGetTime() * 1.3f)
+        );
 
-        Vector3f lightPosition = new Vector3f(2 * (float) Math.cos(glfwGetTime()), 0, 2 * (float) Math.sin(glfwGetTime()));
+        Vector3f diffuseColor = lightColor.mul(new Vector3f(0.5f));
+        Vector3f ambientColor = diffuseColor.mul(new Vector3f(0.2f), new Vector3f());
+
+        objectShader.setUniform("light.ambient", ambientColor);
+        objectShader.setUniform("light.diffuse", diffuseColor);
+
+        Vector3f lightPosition = new Vector3f(2.5f * (float) Math.cos(glfwGetTime()), 1.2f, 2.5f * (float) Math.sin(glfwGetTime()));
         Matrix4f model = new Matrix4f().translate(lightPosition).scale(0.2f);
         lightShader.setUniform("model", model);
         lightShader.setUniform("view", camera.viewMatrix());
@@ -177,7 +194,7 @@ public class Window {
         objectShader.setUniform("model", model);
         objectShader.setUniform("view", camera.viewMatrix());
         objectShader.setUniform("projection", projection);
-        objectShader.setUniform("lightPosition", lightPosition);
+        objectShader.setUniform("light.position", lightPosition);
         objectShader.setUniform("viewerPosition", camera.position());
         Renderer.draw(objectArray, objectShader);
 
