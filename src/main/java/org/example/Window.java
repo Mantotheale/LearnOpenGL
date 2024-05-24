@@ -8,6 +8,7 @@ import org.example.renderer.buffer.VertexBuffer;
 import org.example.renderer.shader.FragmentShader;
 import org.example.renderer.shader.ShaderProgram;
 import org.example.renderer.shader.VertexShader;
+import org.example.renderer.texture.Texture;
 import org.joml.Math;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
@@ -33,6 +34,8 @@ public class Window {
     private double lastY;
     private boolean firstMouse = true;
     private final Camera camera = new Camera();
+    private Texture texture1;
+    private Texture texture2;
 
     public Window() {
         if (!glfwInit()) throw new RuntimeException("Couldn't initialize GLFW");
@@ -70,51 +73,53 @@ public class Window {
     }
 
     private void init() {
-        float vertices[] = {
-                -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
-                0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
-                0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
-                0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
-                -0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
-                -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+        float[] vertices = {
+                // positions          // normals           // texture coords
+                -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  0.0f, 0.0f,
+                0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  1.0f, 0.0f,
+                0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  1.0f, 1.0f,
+                0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  1.0f, 1.0f,
+                -0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  0.0f, 1.0f,
+                -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  0.0f, 0.0f,
 
-                -0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
-                0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
-                0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
-                0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
-                -0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
-                -0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
+                -0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f,   0.0f, 0.0f,
+                0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f,   1.0f, 0.0f,
+                0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f,   1.0f, 1.0f,
+                0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f,   1.0f, 1.0f,
+                -0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f,   0.0f, 1.0f,
+                -0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f,   0.0f, 0.0f,
 
-                -0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
-                -0.5f,  0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
-                -0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
-                -0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
-                -0.5f, -0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
-                -0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
+                -0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,  1.0f, 0.0f,
+                -0.5f,  0.5f, -0.5f, -1.0f,  0.0f,  0.0f,  1.0f, 1.0f,
+                -0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,  0.0f, 1.0f,
+                -0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,  0.0f, 1.0f,
+                -0.5f, -0.5f,  0.5f, -1.0f,  0.0f,  0.0f,  0.0f, 0.0f,
+                -0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,  1.0f, 0.0f,
 
-                0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
-                0.5f,  0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
-                0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
-                0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
-                0.5f, -0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
-                0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
+                0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,  1.0f, 0.0f,
+                0.5f,  0.5f, -0.5f,  1.0f,  0.0f,  0.0f,  1.0f, 1.0f,
+                0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,  0.0f, 1.0f,
+                0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,  0.0f, 1.0f,
+                0.5f, -0.5f,  0.5f,  1.0f,  0.0f,  0.0f,  0.0f, 0.0f,
+                0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,  1.0f, 0.0f,
 
-                -0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
-                0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
-                0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
-                0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
-                -0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
-                -0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
+                -0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,  0.0f, 1.0f,
+                0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,  1.0f, 1.0f,
+                0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,  1.0f, 0.0f,
+                0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,  1.0f, 0.0f,
+                -0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,  0.0f, 0.0f,
+                -0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,  0.0f, 1.0f,
 
-                -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,
-                0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,
-                0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
-                0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
-                -0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
-                -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f
+                -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,  0.0f, 1.0f,
+                0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,  1.0f, 1.0f,
+                0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,  1.0f, 0.0f,
+                0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,  1.0f, 0.0f,
+                -0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,  0.0f, 0.0f,
+                -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,  0.0f, 1.0f
         };
 
-        BufferLayout layout = new BufferLayout.Builder().addFloats(3).addFloats(3).build();
+        BufferLayout layout = new BufferLayout.Builder()
+                .addFloats(3).addFloats(3).addFloats(2).build();
         VertexBuffer vertexBuffer = new VertexBuffer.Builder().add(vertices).build();
         objectArray = new VertexArray(vertexBuffer, layout);
 
@@ -124,7 +129,8 @@ public class Window {
         FragmentShader fragmentShader = new FragmentShader(fragmentShaderPath);
         objectShader = new ShaderProgram(vertexShader, fragmentShader);
 
-        BufferLayout lightLayout = new BufferLayout.Builder().addFloats(3).addFloats(3).build();
+        BufferLayout lightLayout = new BufferLayout.Builder()
+                .addFloats(3).addFloats(3).addFloats(2).build();
         VertexBuffer lightBuffer = new VertexBuffer.Builder().add(vertices).build();
         lightArray = new VertexArray(lightBuffer, lightLayout);
 
@@ -134,11 +140,13 @@ public class Window {
         fragmentShader = new FragmentShader(fragmentShaderPath);
         lightShader = new ShaderProgram(vertexShader, fragmentShader);
 
+        texture1 = new Texture("src/main/resources/images/container2.png");
+        texture2 = new Texture("src/main/resources/images/container2_specular.png");
+
         //lightPosition = new Vector3f(1.2f, 1.0f, 2.0f);
 
-        objectShader.setUniform("material.ambient", 1.0f, 0.5f, 0.31f);
-        objectShader.setUniform("material.diffuse", 1.0f, 0.5f, 0.31f);
-        objectShader.setUniform("material.specular", 0.5f, 0.5f, 0.5f);
+        objectShader.setUniform("material.diffuse", 0);
+        objectShader.setUniform("material.specular", 1);
         objectShader.setUniform("material.shininess", 32.0f);
 
         objectShader.setUniform("light.ambient",  0.2f, 0.2f, 0.2f);
@@ -171,19 +179,7 @@ public class Window {
 
         Matrix4f projection = new Matrix4f().perspective(Math.toRadians(camera.fov()), (float)width / (float)height, 0.1f, 100.0f);
 
-        Vector3f lightColor = new Vector3f(
-                (float) Math.sin(glfwGetTime() * 2.0f),
-                (float) Math.sin(glfwGetTime() * 0.7f),
-                (float) Math.sin(glfwGetTime() * 1.3f)
-        );
-
-        Vector3f diffuseColor = lightColor.mul(new Vector3f(0.5f));
-        Vector3f ambientColor = diffuseColor.mul(new Vector3f(0.2f), new Vector3f());
-
-        objectShader.setUniform("light.ambient", ambientColor);
-        objectShader.setUniform("light.diffuse", diffuseColor);
-
-        Vector3f lightPosition = new Vector3f(2.5f * (float) Math.cos(glfwGetTime()), 1.2f, 2.5f * (float) Math.sin(glfwGetTime()));
+        Vector3f lightPosition = new Vector3f(1.7f * (float) Math.cos(glfwGetTime() / 4), 1.5f, 1.7f * (float) Math.sin(glfwGetTime() / 4));
         Matrix4f model = new Matrix4f().translate(lightPosition).scale(0.2f);
         lightShader.setUniform("model", model);
         lightShader.setUniform("view", camera.viewMatrix());
@@ -196,7 +192,7 @@ public class Window {
         objectShader.setUniform("projection", projection);
         objectShader.setUniform("light.position", lightPosition);
         objectShader.setUniform("viewerPosition", camera.position());
-        Renderer.draw(objectArray, objectShader);
+        Renderer.draw(objectArray, objectShader, texture1, texture2);
 
         glfwSwapBuffers(window);
         glfwPollEvents();

@@ -18,6 +18,18 @@ public class Renderer {
         shaderProgram.unbind();
     }
 
+    public static void draw(VertexArray vertexArray, ShaderProgram shaderProgram, Texture texture) {
+        shaderProgram.bind();
+        vertexArray.bind();
+        texture.bind();
+
+        glDrawArrays(GL_TRIANGLES, 0, vertexArray.count());
+
+        texture.unbind();
+        vertexArray.unbind();
+        shaderProgram.unbind();
+    }
+
     public static void draw(VertexArray vertexArray, ShaderProgram shaderProgram, Texture texture1, Texture texture2) {
         shaderProgram.bind();
         vertexArray.bind();
