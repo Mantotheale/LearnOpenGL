@@ -154,7 +154,9 @@ public class Window {
         objectShader.setUniform("light.diffuse",  0.5f, 0.5f, 0.5f);
         objectShader.setUniform("light.specular", 1.0f, 1.0f, 1.0f);
 
-        objectShader.setUniform("light.direction", -0.2f, -1.0f, -0.3f);
+        objectShader.setUniform("light.constant",  1);
+        objectShader.setUniform("light.linear",  0.09f);
+        objectShader.setUniform("light.quadratic", 0.032f);
 
         Renderer.setClearColor(0, 0, 0, 1);
 
@@ -200,6 +202,7 @@ public class Window {
         lightShader.setUniform("model", model);
         lightShader.setUniform("view", camera.viewMatrix());
         lightShader.setUniform("projection", projection);
+        objectShader.setUniform("light.position", lightPosition);
         Renderer.draw(lightArray, lightShader);
 
 
