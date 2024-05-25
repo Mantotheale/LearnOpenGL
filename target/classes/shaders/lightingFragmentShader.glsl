@@ -74,7 +74,6 @@ void main() {
     result += CalcSpotLight(spotLight, norm, fragPos, viewDir);
 
     result += directionalLight.source.ambient * sampleTexture(material.texture_diffuse1, texCoord);
-
     FragColor = vec4(result, 1.0);
 }
 

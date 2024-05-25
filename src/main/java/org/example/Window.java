@@ -166,6 +166,9 @@ public class Window {
         glEnable(GL_STENCIL_TEST);
     }
 
+    private Model backpack;
+    private ShaderProgram backpackShader;
+
     private void loop() {
         double currentFrame = glfwGetTime();
         deltaTime = currentFrame - lastFrame;
