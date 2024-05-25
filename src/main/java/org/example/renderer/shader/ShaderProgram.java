@@ -83,6 +83,42 @@ public class ShaderProgram {
         }
     }
 
+    public void setUniform(String name, int index, float value) {
+        setUniform(generateName(name, index), value);
+    }
+
+    public void setUniform(String name, String field, float value) {
+        setUniform(generateName(name, field), value);
+    }
+
+    public void setUniform(String name, int index, String field, float value) {
+        setUniform(generateName(name, index, field), value);        unbind();
+    }
+
+    public void setUniform(String name, int index, Vector3f value) {
+        setUniform(generateName(name, index), value);
+    }
+
+    public void setUniform(String name, String field, Vector3f value) {
+        setUniform(generateName(name, field), value);
+    }
+
+    public void setUniform(String name, int index, String field, Vector3f value) {
+        setUniform(generateName(name, index, field), value);
+    }
+
+    public void setUniform(String name, int index, float x, float y, float z) {
+        setUniform(generateName(name, index), x, y, z);
+    }
+
+    public void setUniform(String name, String field, float x, float y, float z) {
+        setUniform(generateName(name, field), x, y, z);
+    }
+
+    public void setUniform(String name, int index, String field, float x, float y, float z) {
+        setUniform(generateName(name, index, field), x, y, z);
+    }
+
     public void attachShader(Shader shader) {
         glAttachShader(id, shader.getId());
     }
@@ -105,5 +141,17 @@ public class ShaderProgram {
             throw new IllegalArgumentException("An uniform with name " + name + " doesn't exist in shader " + id);
 
         return location;
+    }
+
+    private String generateName(String name, int index) {
+        return name + "[" + index + "]";
+    }
+
+    private String generateName(String name, String field) {
+        return name + "." + field;
+    }
+
+    private String generateName(String name, int index, String field) {
+        return generateName(generateName(name, index), field);
     }
 }

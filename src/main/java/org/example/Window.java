@@ -179,53 +179,28 @@ public class Window {
                 new Vector3f( 0.0f,  0.0f, -3.0f)
         };
 
-        objectShader.setUniform("pointLights[0].position", pointLightPositions[0]);
+        for (int i = 0; i < pointLightPositions.length; i++) {
+            objectShader.setUniform("pointLights", i, "position",  pointLightPositions[i]);
 
-        objectShader.setUniform("pointLights[0].ambient",  0.15f, 0.15f, 0.15f);
-        objectShader.setUniform("pointLights[0].diffuse",  0.5f, 0.5f, 0.5f);
-        objectShader.setUniform("pointLights[0].specular", 1.0f, 1.0f, 1.0f);
+            objectShader.setUniform("pointLights", i, "ambient",0.15f, 0.15f, 0.15f);
+            objectShader.setUniform("pointLights", i, "diffuse",0.5f, 0.5f, 0.5f);
+            objectShader.setUniform("pointLights", i, "specular",1.0f, 1.0f, 1.0f);
 
-        objectShader.setUniform("pointLights[0].constant",  1);
-        objectShader.setUniform("pointLights[0].linear",  0.09f);
-        objectShader.setUniform("pointLights[0].quadratic", 0.032f);
+            objectShader.setUniform("pointLights", i, "constant",1);
+            objectShader.setUniform("pointLights", i, "linear",0.09f);
+            objectShader.setUniform("pointLights", i, "quadratic", 0.032f);
+        }
 
-        objectShader.setUniform("pointLights[1].position", pointLightPositions[1]);
+        objectShader.setUniform("flashLight", "ambient",0.15f, 0.15f, 0.15f);
+        objectShader.setUniform("flashLight", "diffuse",0.5f, 0.5f, 0.5f);
+        objectShader.setUniform("flashLight", "specular",1.0f, 1.0f, 1.0f);
 
-        objectShader.setUniform("pointLights[1].ambient",  0.15f, 0.15f, 0.15f);
-        objectShader.setUniform("pointLights[1].diffuse",  0.5f, 0.5f, 0.5f);
-        objectShader.setUniform("pointLights[1].specular", 1.0f, 1.0f, 1.0f);
+        objectShader.setUniform("flashLight", "constant", 1);
+        objectShader.setUniform("flashLight", "linear",0.09f);
+        objectShader.setUniform("flashLight", "quadratic", 0.032f);
 
-        objectShader.setUniform("pointLights[1].constant",  1);
-        objectShader.setUniform("pointLights[1].linear",  0.09f);
-        objectShader.setUniform("pointLights[1].quadratic", 0.032f);
-
-        objectShader.setUniform("pointLights[2].position", pointLightPositions[2]);
-
-        objectShader.setUniform("pointLights[2].ambient",  0.15f, 0.15f, 0.15f);
-        objectShader.setUniform("pointLights[2].diffuse",  0.5f, 0.5f, 0.5f);
-        objectShader.setUniform("pointLights[2].specular", 1.0f, 1.0f, 1.0f);
-
-        objectShader.setUniform("pointLights[2].constant",  1);
-        objectShader.setUniform("pointLights[2].linear",  0.09f);
-        objectShader.setUniform("pointLights[2].quadratic", 0.032f);
-
-        objectShader.setUniform("pointLights[3].position", pointLightPositions[3]);
-
-        objectShader.setUniform("pointLights[3].ambient",  0.15f, 0.15f, 0.15f);
-        objectShader.setUniform("pointLights[3].diffuse",  0.5f, 0.5f, 0.5f);
-        objectShader.setUniform("pointLights[3].specular", 1.0f, 1.0f, 1.0f);
-
-        objectShader.setUniform("pointLights[3].constant",  1);
-        objectShader.setUniform("pointLights[3].linear",  0.09f);
-        objectShader.setUniform("pointLights[3].quadratic", 0.032f);
-
-        objectShader.setUniform("flashLight.ambient",  0.15f, 0.15f, 0.15f);
-        objectShader.setUniform("flashLight.diffuse",  0.5f, 0.5f, 0.5f);
-        objectShader.setUniform("flashLight.specular", 1.0f, 1.0f, 1.0f);
-
-        objectShader.setUniform("flashLight.constant",  1);
-        objectShader.setUniform("flashLight.linear",  0.09f);
-        objectShader.setUniform("flashLight.quadratic", 0.032f);
+        objectShader.setUniform("flashLight", "cutoff", Math.cos(Math.toRadians(12.5f)));
+        objectShader.setUniform("flashLight", "outerCutoff", Math.cos(Math.toRadians(17.5f)));
 
         objectShader.setUniform("flashLight.cutoff", Math.cos(Math.toRadians(12.5f)));
         objectShader.setUniform("flashLight.outerCutoff", Math.cos(Math.toRadians(17.5f)));
@@ -254,18 +229,6 @@ public class Window {
 
         Matrix4f projection = new Matrix4f().perspective(Math.toRadians(camera.fov()), (float)width / (float)height, 0.1f, 100.0f);
 
-        /*Vector3f lightPosition = new Vector3f(1.7f * (float) Math.cos(glfwGetTime() / 4), 1.5f, 1.7f * (float) Math.sin(glfwGetTime() / 4));
-        Matrix4f model = new Matrix4f().translate(lightPosition).scale(0.2f);
-        lightShader.setUniform("model", model);
-        lightShader.setUniform("view", camera.viewMatrix());
-        lightShader.setUniform("projection", projection);
-        objectShader.setUniform("light.position", lightPosition);
-        Renderer.draw(lightArray, lightShader);
-        */
-
-        /*;
-        objectShader.setUniform("light.cutoff", Math.cos(Math.toRadians(12.5f)));
-        objectShader.setUniform("light.outerCutoff", Math.cos(Math.toRadians(17.5f)));*/
         for(int i = 0; i < 4; i++) {
             Matrix4f model = new Matrix4f().translate(pointLightPositions[i]).scale(0.2f);
             lightShader.setUniform("model", model);
@@ -274,8 +237,8 @@ public class Window {
             Renderer.draw(objectArray, lightShader);
         }
 
-        objectShader.setUniform("flashLight.position", camera.position());
-        objectShader.setUniform("flashLight.direction", camera.front());
+        objectShader.setUniform("flashLight", "position", camera.position());
+        objectShader.setUniform("flashLight", "direction", camera.front());
 
         for(int i = 0; i < 10; i++) {
             float angle = 20.0f * i;
@@ -318,7 +281,7 @@ public class Window {
         camera.processMouseMovement(xOffset, yOffset, deltaTime);
     }
 
-    void scroll_callback(long window, double xoffset, double yOffset) {
+    void scroll_callback(long window, double xOffset, double yOffset) {
         camera.processMouseScroll(yOffset, deltaTime);
     }
 
