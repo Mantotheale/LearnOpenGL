@@ -34,7 +34,6 @@ public class Mesh {
 
             texture.bind(i);
 
-            String name = textures.get(i).type();
             String number;
             if (texture.type().equals("texture_diffuse")) {
                 number = Integer.toString(diffuseNumber);

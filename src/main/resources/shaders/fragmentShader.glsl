@@ -2,9 +2,9 @@
 out vec4 FragColor;
 
 struct Material {
-    sampler2D diffuse;
-    sampler2D specular;
-    float shininess;
+    sampler2D texture_diffuse1;
+    sampler2D texture_specular1;
+float shininess;
 };
 
 struct LightSource {
@@ -73,7 +73,7 @@ void main() {
 
     result += CalcSpotLight(spotLight, norm, fragPos, viewDir);
 
-    result += directionalLight.source.ambient * sampleTexture(material.diffuse, texCoord);
+    result += directionalLight.source.ambient * sampleTexture(material.texture_diffuse1, texCoord);
 
     FragColor = vec4(result, 1.0);
 }
@@ -84,7 +84,7 @@ vec3 CalcDirLight(DirectionalLight light, vec3 normal, vec3 viewDir) {
     float diff = diffuseCoefficient(lightDir, normal);
     float spec = specularCoefficient(lightDir, normal, viewDir, material.shininess);
 
-    return combineComponents(light.source, diff, spec, material.diffuse, material.specular, texCoord);
+    return combineComponents(light.source, diff, spec, material.texture_diffuse1, material.texture_specular1, texCoord);
 }
 
 vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir) {
@@ -95,7 +95,7 @@ vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir) {
 
     float attenuation = attenuationCoefficient(light.source, light.attenuation);
 
-    return attenuation * combineComponents(light.source, diff, spec, material.diffuse, material.specular, texCoord);
+    return attenuation * combineComponents(light.source, diff, spec, material.texture_diffuse1, material.texture_specular1, texCoord);
 }
 
 vec3 CalcSpotLight(SpotLight light, vec3 normal, vec3 fragPos, vec3 viewDir) {
@@ -110,7 +110,7 @@ vec3 CalcSpotLight(SpotLight light, vec3 normal, vec3 fragPos, vec3 viewDir) {
     float epsilon = light.cutoff - light.outerCutoff;
     float intensity = clamp((theta - light.outerCutoff) / epsilon, 0.0, 1.0);
 
-    return attenuation * intensity * combineComponents(light.source, diff, spec, material.diffuse, material.specular, texCoord);
+    return attenuation * intensity * combineComponents(light.source, diff, spec, material.texture_diffuse1, material.texture_specular1, texCoord);
 }
 
 float diffuseCoefficient(vec3 lightDir, vec3 normal) {
@@ -135,7 +135,8 @@ vec3 sampleTexture(sampler2D tex, vec2 texCoord) {
 
 vec3 combineComponents(LightSource lightSource, float diff, float spec, sampler2D diffTex, sampler2D specTex, vec2 texCoord) {
     vec3 diffuse = lightSource.diffuse * diff * sampleTexture(diffTex, texCoord);
-    vec3 specular = lightSource.specular * spec * sampleTexture(specTex, texCoord);
+    //vec3 specular = lightSource.specular * spec * sampleTexture(specTex, texCoord);
+    return diffuse;
 
-    return diffuse + specular;
+    //return diffuse + specular;
 }

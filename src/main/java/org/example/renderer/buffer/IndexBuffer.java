@@ -1,6 +1,7 @@
 package org.example.renderer.buffer;
 
 import org.lwjgl.system.MemoryStack;
+import org.lwjgl.system.MemoryUtil;
 
 import java.nio.IntBuffer;
 import java.util.List;
@@ -18,11 +19,8 @@ public class IndexBuffer {
 
         bind();
 
-        try (MemoryStack stack = MemoryStack.stackPush()){
-            IntBuffer buffer = stack.mallocInt(indices.length).put(indices).rewind();
-
-            glBufferData(GL_ELEMENT_ARRAY_BUFFER, buffer, GL_STATIC_DRAW);
-        }
+        IntBuffer buffer = MemoryUtil.memAllocInt(indices.length).put(indices).rewind();
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, buffer, GL_STATIC_DRAW);
 
         unbind();
     }
@@ -37,11 +35,8 @@ public class IndexBuffer {
 
         bind();
 
-        try (MemoryStack stack = MemoryStack.stackPush()) {
-            IntBuffer buffer = stack.mallocInt(indices.length).put(indices).rewind();
-
-            glBufferData(GL_ELEMENT_ARRAY_BUFFER, buffer, GL_STATIC_DRAW);
-        }
+        IntBuffer buffer = MemoryUtil.memAllocInt(indices.length).put(indices).rewind();
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, buffer, GL_STATIC_DRAW);
 
         unbind();
     }

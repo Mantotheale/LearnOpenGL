@@ -1,5 +1,6 @@
 package org.example;
 
+import org.example.renderer.Model;
 import org.example.renderer.Renderer;
 import org.example.renderer.buffer.BufferLayout;
 import org.example.renderer.buffer.IndexBuffer;
@@ -145,10 +146,8 @@ public class Window {
         texture1 = new Texture("src/main/resources/images/container2.png", "a");
         texture2 = new Texture("src/main/resources/images/container2_specular.png", "b");
 
-        //lightPosition = new Vector3f(1.2f, 1.0f, 2.0f);
-
-        objectShader.setUniform("material.diffuse", 0);
-        objectShader.setUniform("material.specular", 1);
+        /*objectShader.setUniform("material.diffuse", 0);
+        objectShader.setUniform("material.specular", 1);*/
         objectShader.setUniform("material.shininess", 32.0f);
 
         objectShader.setUniform("directionalLight.source.direction",  -0.2f, -1, 0);
@@ -171,6 +170,7 @@ public class Window {
                 new Vector3f( 1.5f,  0.2f, -1.5f),
                 new Vector3f(-1.3f,  1.0f, -1.5f)
         };
+
 
         pointLightPositions = new Vector3f[]{
                 new Vector3f( 0.7f,  0.2f,  2.0f),
@@ -201,11 +201,14 @@ public class Window {
 
         objectShader.setUniform("spotLight", "cutoff", Math.cos(Math.toRadians(12.5f)));
         objectShader.setUniform("spotLight", "outerCutoff", Math.cos(Math.toRadians(17.5f)));
+
+        model = new Model("src/main/resources/images/backpack.obj");
     }
 
     private float lightRadius = 1.5f;
     private double last0 = 0;
     private int count = 0;
+    private Model model;
 
     private void loop() {
         double currentFrame = glfwGetTime();
@@ -237,6 +240,7 @@ public class Window {
         objectShader.setUniform("spotLight", "source", "position", camera.position());
         objectShader.setUniform("spotLight", "source", "direction", camera.front());
 
+        /*
         for(int i = 0; i < 10; i++) {
             float angle = 20.0f * i;
 
@@ -247,7 +251,8 @@ public class Window {
             objectShader.setUniform("projection", projection);
             objectShader.setUniform("viewerPosition", camera.position());
             Renderer.draw(objectArray, objectShader, texture1, texture2);
-        }
+        }*/
+        model.draw(objectShader);
 
         glfwSwapBuffers(window);
         glfwPollEvents();
