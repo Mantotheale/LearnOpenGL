@@ -191,7 +191,7 @@ public class Window {
             objectShader.setUniform("pointLights", i, "quadratic", 0.032f);
         }
 
-        objectShader.setUniform("flashLight", "ambient",0.15f, 0.15f, 0.15f);
+        /*objectShader.setUniform("flashLight", "ambient",0.15f, 0.15f, 0.15f);
         objectShader.setUniform("flashLight", "diffuse",0.5f, 0.5f, 0.5f);
         objectShader.setUniform("flashLight", "specular",1.0f, 1.0f, 1.0f);
 
@@ -200,10 +200,7 @@ public class Window {
         objectShader.setUniform("flashLight", "quadratic", 0.032f);
 
         objectShader.setUniform("flashLight", "cutoff", Math.cos(Math.toRadians(12.5f)));
-        objectShader.setUniform("flashLight", "outerCutoff", Math.cos(Math.toRadians(17.5f)));
-
-        objectShader.setUniform("flashLight.cutoff", Math.cos(Math.toRadians(12.5f)));
-        objectShader.setUniform("flashLight.outerCutoff", Math.cos(Math.toRadians(17.5f)));
+        objectShader.setUniform("flashLight", "outerCutoff", Math.cos(Math.toRadians(17.5f)));*/
     }
 
     private float lightRadius = 1.5f;
@@ -237,8 +234,8 @@ public class Window {
             Renderer.draw(objectArray, lightShader);
         }
 
-        objectShader.setUniform("flashLight", "position", camera.position());
-        objectShader.setUniform("flashLight", "direction", camera.front());
+        //objectShader.setUniform("flashLight", "position", camera.position());
+        //objectShader.setUniform("flashLight", "direction", camera.front());
 
         for(int i = 0; i < 10; i++) {
             float angle = 20.0f * i;
