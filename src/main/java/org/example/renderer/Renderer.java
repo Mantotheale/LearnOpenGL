@@ -66,6 +66,11 @@ public class Renderer {
         glClear(GL_DEPTH_BUFFER_BIT);
     }
 
+    public static void clearStencil() {
+        glClear(GL_STENCIL_BUFFER_BIT);
+    }
+
+
     public static void setClearColor(float red, float green, float blue, float alpha) {
         glClearColor(red, green, blue, alpha);
     }
