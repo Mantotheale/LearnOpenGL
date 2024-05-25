@@ -126,7 +126,7 @@ public class Window {
         VertexBuffer vertexBuffer = new VertexBuffer.Builder().add(vertices).build();
         objectArray = new VertexArray(vertexBuffer, layout);
 
-        String vertexShaderPath = "src/main/resources/shaders/vertexShader.glsl";
+        String vertexShaderPath = "src/main/resources/shaders/lightingVertexShader.glsl";
         String fragmentShaderPath = "src/main/resources/shaders/fragmentShader.glsl";
         VertexShader vertexShader = new VertexShader(vertexShaderPath);
         FragmentShader fragmentShader = new FragmentShader(fragmentShaderPath);
@@ -137,8 +137,8 @@ public class Window {
         VertexBuffer lightBuffer = new VertexBuffer.Builder().add(vertices).build();
         lightArray = new VertexArray(lightBuffer, lightLayout);
 
-        vertexShaderPath = "src/main/resources/shaders/vertexShader.glsl";
-        fragmentShaderPath = "src/main/resources/shaders/lightSourceFragmentShader.glsl";
+        vertexShaderPath = "src/main/resources/shaders/lightingVertexShader.glsl";
+        fragmentShaderPath = "src/main/resources/shaders/lightingFragmentShader.glsl";
         vertexShader = new VertexShader(vertexShaderPath);
         fragmentShader = new FragmentShader(fragmentShaderPath);
         lightShader = new ShaderProgram(vertexShader, fragmentShader);
@@ -146,8 +146,6 @@ public class Window {
         texture1 = new Texture("src/main/resources/images/container2.png", "a");
         texture2 = new Texture("src/main/resources/images/container2_specular.png", "b");
 
-        /*objectShader.setUniform("material.diffuse", 0);
-        objectShader.setUniform("material.specular", 1);*/
         objectShader.setUniform("material.shininess", 32.0f);
 
         objectShader.setUniform("directionalLight.source.direction",  -0.2f, -1, 0);

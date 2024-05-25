@@ -21,6 +21,7 @@ public class IndexBuffer {
 
         IntBuffer buffer = MemoryUtil.memAllocInt(indices.length).put(indices).rewind();
         glBufferData(GL_ELEMENT_ARRAY_BUFFER, buffer, GL_STATIC_DRAW);
+        MemoryUtil.memFree(buffer);
 
         unbind();
     }
@@ -37,6 +38,7 @@ public class IndexBuffer {
 
         IntBuffer buffer = MemoryUtil.memAllocInt(indices.length).put(indices).rewind();
         glBufferData(GL_ELEMENT_ARRAY_BUFFER, buffer, GL_STATIC_DRAW);
+        MemoryUtil.memFree(buffer);
 
         unbind();
     }
