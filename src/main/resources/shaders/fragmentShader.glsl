@@ -135,8 +135,7 @@ vec3 sampleTexture(sampler2D tex, vec2 texCoord) {
 
 vec3 combineComponents(LightSource lightSource, float diff, float spec, sampler2D diffTex, sampler2D specTex, vec2 texCoord) {
     vec3 diffuse = lightSource.diffuse * diff * sampleTexture(diffTex, texCoord);
-    //vec3 specular = lightSource.specular * spec * sampleTexture(specTex, texCoord);
-    return diffuse;
+    vec3 specular = lightSource.specular * spec * sampleTexture(specTex, texCoord);
 
-    //return diffuse + specular;
+    return diffuse + specular;
 }

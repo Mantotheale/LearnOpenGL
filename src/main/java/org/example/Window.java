@@ -240,7 +240,7 @@ public class Window {
         objectShader.setUniform("spotLight", "source", "position", camera.position());
         objectShader.setUniform("spotLight", "source", "direction", camera.front());
 
-        /*
+
         for(int i = 0; i < 10; i++) {
             float angle = 20.0f * i;
 
@@ -251,7 +251,13 @@ public class Window {
             objectShader.setUniform("projection", projection);
             objectShader.setUniform("viewerPosition", camera.position());
             Renderer.draw(objectArray, objectShader, texture1, texture2);
-        }*/
+        }
+
+        objectShader.setUniform("model", new Matrix4f());
+        objectShader.setUniform("view", camera.viewMatrix());
+        objectShader.setUniform("projection", projection);
+        objectShader.setUniform("viewerPosition", camera.position());
+
         model.draw(objectShader);
 
         glfwSwapBuffers(window);

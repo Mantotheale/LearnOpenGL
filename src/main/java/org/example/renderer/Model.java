@@ -55,7 +55,6 @@ public class Model {
         List<Integer> indices = new ArrayList<>();
         List<Texture> textures = new ArrayList<>();
 
-        System.out.println(mesh.mNumVertices());
         for(int i = 0; i < mesh.mNumVertices(); i++) {
             AIVector3D meshVertex = mesh.mVertices().get(i);
             AIVector3D meshNormal = mesh.mNormals().get(i);
@@ -106,7 +105,6 @@ public class Model {
             if (loadedTextures.containsKey(path.dataString())) {
                 textures.add(loadedTextures.get(path.dataString()));
             } else {
-                System.out.println(path.dataString());
                 Texture texture = new Texture(directory + "/" + path.dataString(), typeName);
                 textures.add(texture);
                 loadedTextures.put(path.dataString(), texture);
