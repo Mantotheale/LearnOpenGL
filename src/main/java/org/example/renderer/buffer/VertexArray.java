@@ -8,6 +8,7 @@ import static org.lwjgl.opengl.GL30.glGenVertexArrays;
 public class VertexArray {
     private final int id;
     private final int vertexCount;
+    private IndexBuffer indexBuffer;
 
     public VertexArray(VertexBuffer vertexBuffer, BufferLayout bufferLayout) {
         id = glGenVertexArrays();
@@ -28,6 +29,11 @@ public class VertexArray {
         unbind();
     }
 
+    public VertexArray(VertexBuffer vertexBuffer, BufferLayout bufferLayout, IndexBuffer indexBuffer) {
+        this(vertexBuffer, bufferLayout);
+        bindIndexBuffer(indexBuffer);
+    }
+
     public void bind() {
         glBindVertexArray(id);
     }
@@ -44,11 +50,22 @@ public class VertexArray {
         bind();
         indexBuffer.bind();
         unbind();
+        this.indexBuffer = indexBuffer;
     }
 
-    public void unbindIndexBuffer(IndexBuffer indexBuffer) {
+    public void unbindIndexBuffer() {
         bind();
         indexBuffer.unbind();
         unbind();
+        this.indexBuffer = null;
+    }
+
+    public boolean isIndexBufferBound() { return indexBuffer != null; }
+
+    public int indexBufferCount() {
+        if (indexBuffer == null)
+            return 0;
+
+        return indexBuffer.count();
     }
 }

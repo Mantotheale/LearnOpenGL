@@ -13,8 +13,9 @@ import static org.lwjgl.stb.STBImage.*;
 public class Texture {
     private final int id;
     private int boundSlot = -1;
+    private final String type;
 
-    public Texture(String imagePathString) {
+    public Texture(String imagePathString, String type) {
         id = glGenTextures();
 
         bind();
@@ -48,6 +49,8 @@ public class Texture {
         }
 
         unbind();
+
+        this.type = type;
     }
 
     public void bind(int slot) {
@@ -69,4 +72,6 @@ public class Texture {
     public boolean isBound() {
         return boundSlot != -1;
     }
+
+    public String type() { return type; }
 }

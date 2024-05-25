@@ -9,12 +9,10 @@ import static org.lwjgl.opengl.GL11.*;
 public class BufferLayout implements Iterable<BufferLayout.LayoutElement> {
     private final List<LayoutElement> layoutElements;
     private final int stride;
-    private final int byteSize;
 
     private BufferLayout(List<LayoutElement> layoutElements) {
         this.layoutElements = layoutElements;
         this.stride = layoutElements.stream().mapToInt(LayoutElement::size).reduce(0, Integer::sum);
-        this.byteSize = stride;
     }
 
     public final int stride() {
@@ -24,6 +22,8 @@ public class BufferLayout implements Iterable<BufferLayout.LayoutElement> {
     public final int byteSize() {
         return stride;
     }
+
+    public final int count() { return stride; }
 
     @Override
     public Iterator<LayoutElement> iterator() {

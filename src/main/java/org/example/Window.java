@@ -142,8 +142,8 @@ public class Window {
         fragmentShader = new FragmentShader(fragmentShaderPath);
         lightShader = new ShaderProgram(vertexShader, fragmentShader);
 
-        texture1 = new Texture("src/main/resources/images/container2.png");
-        texture2 = new Texture("src/main/resources/images/container2_specular.png");
+        texture1 = new Texture("src/main/resources/images/container2.png", "a");
+        texture2 = new Texture("src/main/resources/images/container2_specular.png", "b");
 
         //lightPosition = new Vector3f(1.2f, 1.0f, 2.0f);
 
