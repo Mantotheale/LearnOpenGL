@@ -151,10 +151,10 @@ public class Window {
         objectShader.setUniform("material.specular", 1);
         objectShader.setUniform("material.shininess", 32.0f);
 
-        objectShader.setUniform("directionalLight.direction",  -0.2f, -1, 0);
-        objectShader.setUniform("directionalLight.ambient",  0.15f, 0.15f, 0.15f);
-        objectShader.setUniform("directionalLight.diffuse",  0.5f, 0.5f, 0.5f);
-        objectShader.setUniform("directionalLight.specular", 1.0f, 1.0f, 1.0f);
+        objectShader.setUniform("directionalLight.source.direction",  -0.2f, -1, 0);
+        objectShader.setUniform("directionalLight.source.ambient",  0.15f, 0.15f, 0.15f);
+        objectShader.setUniform("directionalLight.source.diffuse",  0.5f, 0.5f, 0.5f);
+        objectShader.setUniform("directionalLight.source.specular", 1.0f, 1.0f, 1.0f);
 
         Renderer.setClearColor(0, 0, 0, 1);
 
@@ -180,27 +180,27 @@ public class Window {
         };
 
         for (int i = 0; i < pointLightPositions.length; i++) {
-            objectShader.setUniform("pointLights", i, "position",  pointLightPositions[i]);
+            objectShader.setUniform("pointLights", i, "source", "position", pointLightPositions[i]);
 
-            objectShader.setUniform("pointLights", i, "ambient",0.15f, 0.15f, 0.15f);
-            objectShader.setUniform("pointLights", i, "diffuse",0.5f, 0.5f, 0.5f);
-            objectShader.setUniform("pointLights", i, "specular",1.0f, 1.0f, 1.0f);
+            objectShader.setUniform("pointLights", i, "source", "ambient",0.15f, 0.15f, 0.15f);
+            objectShader.setUniform("pointLights", i, "source", "diffuse",0.5f, 0.5f, 0.5f);
+            objectShader.setUniform("pointLights", i, "source", "specular",1.0f, 1.0f, 1.0f);
 
-            objectShader.setUniform("pointLights", i, "constant",1);
-            objectShader.setUniform("pointLights", i, "linear",0.09f);
-            objectShader.setUniform("pointLights", i, "quadratic", 0.032f);
+            objectShader.setUniform("pointLights", i, "attenuation", "constant",1);
+            objectShader.setUniform("pointLights", i, "attenuation", "linear",0.09f);
+            objectShader.setUniform("pointLights", i, "attenuation", "quadratic", 0.032f);
         }
 
-        /*objectShader.setUniform("flashLight", "ambient",0.15f, 0.15f, 0.15f);
-        objectShader.setUniform("flashLight", "diffuse",0.5f, 0.5f, 0.5f);
-        objectShader.setUniform("flashLight", "specular",1.0f, 1.0f, 1.0f);
+        objectShader.setUniform("spotLight", "source", "ambient",0.15f, 0.15f, 0.15f);
+        objectShader.setUniform("spotLight", "source", "diffuse",0.5f, 0.5f, 0.5f);
+        objectShader.setUniform("spotLight", "source", "specular",1.0f, 1.0f, 1.0f);
 
-        objectShader.setUniform("flashLight", "constant", 1);
-        objectShader.setUniform("flashLight", "linear",0.09f);
-        objectShader.setUniform("flashLight", "quadratic", 0.032f);
+        objectShader.setUniform("spotLight", "attenuation", "constant", 1);
+        objectShader.setUniform("spotLight", "attenuation","linear",0.09f);
+        objectShader.setUniform("spotLight", "attenuation", "quadratic", 0.032f);
 
-        objectShader.setUniform("flashLight", "cutoff", Math.cos(Math.toRadians(12.5f)));
-        objectShader.setUniform("flashLight", "outerCutoff", Math.cos(Math.toRadians(17.5f)));*/
+        objectShader.setUniform("spotLight", "cutoff", Math.cos(Math.toRadians(12.5f)));
+        objectShader.setUniform("spotLight", "outerCutoff", Math.cos(Math.toRadians(17.5f)));
     }
 
     private float lightRadius = 1.5f;
@@ -234,8 +234,8 @@ public class Window {
             Renderer.draw(objectArray, lightShader);
         }
 
-        //objectShader.setUniform("flashLight", "position", camera.position());
-        //objectShader.setUniform("flashLight", "direction", camera.front());
+        objectShader.setUniform("spotLight", "source", "position", camera.position());
+        objectShader.setUniform("spotLight", "source", "direction", camera.front());
 
         for(int i = 0; i < 10; i++) {
             float angle = 20.0f * i;

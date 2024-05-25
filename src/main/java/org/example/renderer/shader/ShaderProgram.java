@@ -92,7 +92,7 @@ public class ShaderProgram {
     }
 
     public void setUniform(String name, int index, String field, float value) {
-        setUniform(generateName(name, index, field), value);        unbind();
+        setUniform(generateName(name, index, field), value);
     }
 
     public void setUniform(String name, int index, Vector3f value) {
@@ -118,6 +118,31 @@ public class ShaderProgram {
     public void setUniform(String name, int index, String field, float x, float y, float z) {
         setUniform(generateName(name, index, field), x, y, z);
     }
+
+    public void setUniform(String name, int index, String field, String innerField, float value) {
+        setUniform(generateName(name, index, field, innerField), value);
+    }
+
+    public void setUniform(String name, int index, String field, String innerField, Vector3f value) {
+        setUniform(generateName(name, index, field, innerField), value);
+    }
+
+    public void setUniform(String name, int index, String field, String innerField, float x, float y, float z) {
+        setUniform(generateName(name, index, field, innerField), x, y, z);
+    }
+
+    public void setUniform(String name, String field, String innerField, float value) {
+        setUniform(generateName(name, field, innerField), value);
+    }
+
+    public void setUniform(String name, String field, String innerField, Vector3f value) {
+        setUniform(generateName(name, field, innerField), value);
+    }
+
+    public void setUniform(String name, String field, String innerField, float x, float y, float z) {
+        setUniform(generateName(name, field, innerField), x, y, z);
+    }
+
 
     public void attachShader(Shader shader) {
         glAttachShader(id, shader.getId());
@@ -153,5 +178,13 @@ public class ShaderProgram {
 
     private String generateName(String name, int index, String field) {
         return generateName(generateName(name, index), field);
+    }
+
+    private String generateName(String name, String field, String innerField) {
+        return generateName(generateName(name, field), innerField);
+    }
+
+    private String generateName(String name, int index, String field, String innerField) {
+        return generateName(generateName(name, index, field), innerField);
     }
 }
