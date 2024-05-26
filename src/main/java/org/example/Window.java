@@ -234,11 +234,18 @@ public class Window {
         vertexShader = new VertexShader(vertexShaderPath);
         fragmentShader = new FragmentShader(fragmentShaderPath);
         quadShader = new ShaderProgram(vertexShader, fragmentShader);
+
+        vertexShaderPath = "src/main/resources/shaders/randomVertexShader.glsl";
+        fragmentShaderPath = "src/main/resources/shaders/frameBufferFragmentShader.glsl";
+        vertexShader = new VertexShader(vertexShaderPath);
+        fragmentShader = new FragmentShader(fragmentShaderPath);
+        rearviewShader = new ShaderProgram(vertexShader, fragmentShader);
     }
 
     private Model backpack;
     private ShaderProgram backpackShader;
     private ShaderProgram quadShader;
+    private ShaderProgram rearviewShader;
     private int fbo;
     private Texture fbTexture;
 
@@ -314,6 +321,10 @@ public class Window {
         glDisable(GL_DEPTH_TEST);
         Renderer.draw(quadVAO, quadShader, fbTexture);
 
+        rearviewShader.setUniform("model", new Matrix4f().translate(0.5f, 0.5f, 0).scale(0.5f).rotate(Math.toRadians(180f), 0, 1, 0));
+        rearviewShader.setUniform("view", new Matrix4f());
+        rearviewShader.setUniform("projection", new Matrix4f());
+        Renderer.draw(quadVAO, rearviewShader, fbTexture);
 
         glfwSwapBuffers(window);
         glfwPollEvents();
