@@ -198,10 +198,10 @@ public class Window {
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-        int fbo = glGenFramebuffers();
+        fbo = glGenFramebuffers();
         glBindFramebuffer(GL_FRAMEBUFFER, fbo);
 
-        Texture fbTexture = new Texture(width, height);
+        fbTexture = new Texture(width, height);
         glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, fbTexture.id(), 0);
 
         int rbo = glGenRenderbuffers();
@@ -228,10 +228,19 @@ public class Window {
         VertexBuffer quadBuffer = new VertexBuffer.Builder().add(quadVertices).build();
         BufferLayout quadLayout = new BufferLayout.Builder().addFloats(3).addFloats(2).build();
         quadVAO = new VertexArray(quadBuffer, quadLayout);
+
+        vertexShaderPath = "src/main/resources/shaders/frameBufferVertexShader.glsl";
+        fragmentShaderPath = "src/main/resources/shaders/frameBufferFragmentShader.glsl";
+        vertexShader = new VertexShader(vertexShaderPath);
+        fragmentShader = new FragmentShader(fragmentShaderPath);
+        quadShader = new ShaderProgram(vertexShader, fragmentShader);
     }
 
     private Model backpack;
     private ShaderProgram backpackShader;
+    private ShaderProgram quadShader;
+    private int fbo;
+    private Texture fbTexture;
 
     private record VegetationDistance(float distance, Vector3f position) implements Comparable<VegetationDistance> {
         @Override
@@ -254,8 +263,12 @@ public class Window {
 
         processInput();
 
+        glBindFramebuffer(GL_FRAMEBUFFER, fbo);
+        glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
         Renderer.clearColor();
         Renderer.clearDepth();
+        glEnable(GL_DEPTH_TEST);
+
         Renderer.clearStencil();
 
         Matrix4f view = camera.viewMatrix();
@@ -293,6 +306,14 @@ public class Window {
             shader.setUniform("model", model);
             Renderer.draw(transparentVAO, shader, windowTexture);
         }
+
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+        glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+        glClear(GL_COLOR_BUFFER_BIT);
+
+        glDisable(GL_DEPTH_TEST);
+        Renderer.draw(quadVAO, quadShader, fbTexture);
+
 
         glfwSwapBuffers(window);
         glfwPollEvents();
