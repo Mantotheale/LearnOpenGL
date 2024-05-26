@@ -183,14 +183,9 @@ public class Window {
 
         processInput();
 
-        glEnable(GL_DEPTH_TEST);
-        glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
-
         Renderer.clearColor();
         Renderer.clearDepth();
         Renderer.clearStencil();
-
-        glStencilMask(0x00);
 
         Matrix4f view = camera.viewMatrix();
         Matrix4f projection = new Matrix4f()
@@ -205,50 +200,11 @@ public class Window {
         shader.setUniform("model", model);
         Renderer.draw(planeVAO, shader, planeTexture);
 
-
-
-
-        glStencilFunc(GL_ALWAYS, 1, 0xFF);
-        glStencilMask(0xFF);
-
         model = new Matrix4f().translate(-1.0f, 0.0f, -1.0f);
-        shader.setUniform("model", model);
-        Renderer.draw(cubeVAO, shader, cubeTexture);
-
-        glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
-        glStencilMask(0x00);
-        //glDisable(GL_DEPTH_TEST);
-
-        model = new Matrix4f().translate(-1.0f, 0.0f, -1.0f).scale(1.1f);
-        shaderSingleColor.setUniform("model", model);
-        Renderer.draw(cubeVAO, shaderSingleColor);
-
-        glStencilMask(0xFF);
-        glStencilFunc(GL_ALWAYS, 1, 0xFF);
-        glEnable(GL_DEPTH_TEST);
-
-        Renderer.clearStencil();
-
-
-        glStencilFunc(GL_ALWAYS, 1, 0xFF);
-        glStencilMask(0xFF);
+        Renderer.drawWithOutline(cubeVAO, shader, cubeTexture, shaderSingleColor, model);
 
         model = new Matrix4f().translate(2.0f, 0.0f, 0f);
-        shader.setUniform("model", model);
-        Renderer.draw(cubeVAO, shader, cubeTexture);
-
-        glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
-        glStencilMask(0x00);
-        //glDisable(GL_DEPTH_TEST);
-
-        model = new Matrix4f().translate(2.0f, 0.0f, 0f).scale(1.1f);;
-        shaderSingleColor.setUniform("model", model);
-        Renderer.draw(cubeVAO, shaderSingleColor);
-
-        glStencilMask(0xFF);
-        glStencilFunc(GL_ALWAYS, 1, 0xFF);
-        glEnable(GL_DEPTH_TEST);
-
+        Renderer.drawWithOutline(cubeVAO, shader, cubeTexture, shaderSingleColor, model);
 
         glfwSwapBuffers(window);
         glfwPollEvents();
