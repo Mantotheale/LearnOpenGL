@@ -84,49 +84,49 @@ public class Window {
     }
 
     private void init() {
-        float[] cubeVertices = {
-                // positions          // texture Coords
-                -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
-                0.5f, -0.5f, -0.5f,  1.0f, 0.0f,
-                0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-                0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-                -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
-                -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
-
-                -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-                0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
-                0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
-                0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
-                -0.5f,  0.5f,  0.5f,  0.0f, 1.0f,
-                -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-
-                -0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-                -0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-                -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-                -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-                -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-                -0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-
-                0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-                0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-                0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-                0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-                0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-                0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-
-                -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-                0.5f, -0.5f, -0.5f,  1.0f, 1.0f,
-                0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
-                0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
-                -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-                -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-
-                -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
-                0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-                0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-                0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-                -0.5f,  0.5f,  0.5f,  0.0f, 0.0f,
-                -0.5f,  0.5f, -0.5f,  0.0f, 1.0f
+        float[] cubeVertices= {
+                // Back face
+                -0.5f, -0.5f, -0.5f,  0.0f, 0.0f, // Bottom-left
+                0.5f,  0.5f, -0.5f,  1.0f, 1.0f, // top-right
+                0.5f, -0.5f, -0.5f,  1.0f, 0.0f, // bottom-right
+                0.5f,  0.5f, -0.5f,  1.0f, 1.0f, // top-right
+                -0.5f, -0.5f, -0.5f,  0.0f, 0.0f, // bottom-left
+                -0.5f,  0.5f, -0.5f,  0.0f, 1.0f, // top-left
+                // Front face
+                -0.5f, -0.5f,  0.5f,  0.0f, 0.0f, // bottom-left
+                0.5f, -0.5f,  0.5f,  1.0f, 0.0f, // bottom-right
+                0.5f,  0.5f,  0.5f,  1.0f, 1.0f, // top-right
+                0.5f,  0.5f,  0.5f,  1.0f, 1.0f, // top-right
+                -0.5f,  0.5f,  0.5f,  0.0f, 1.0f, // top-left
+                -0.5f, -0.5f,  0.5f,  0.0f, 0.0f, // bottom-left
+                // Left face
+                -0.5f,  0.5f,  0.5f,  1.0f, 0.0f, // top-right
+                -0.5f,  0.5f, -0.5f,  1.0f, 1.0f, // top-left
+                -0.5f, -0.5f, -0.5f,  0.0f, 1.0f, // bottom-left
+                -0.5f, -0.5f, -0.5f,  0.0f, 1.0f, // bottom-left
+                -0.5f, -0.5f,  0.5f,  0.0f, 0.0f, // bottom-right
+                -0.5f,  0.5f,  0.5f,  1.0f, 0.0f, // top-right
+                // Right face
+                0.5f,  0.5f,  0.5f,  1.0f, 0.0f, // top-left
+                0.5f, -0.5f, -0.5f,  0.0f, 1.0f, // bottom-right
+                0.5f,  0.5f, -0.5f,  1.0f, 1.0f, // top-right
+                0.5f, -0.5f, -0.5f,  0.0f, 1.0f, // bottom-right
+                0.5f,  0.5f,  0.5f,  1.0f, 0.0f, // top-left
+                0.5f, -0.5f,  0.5f,  0.0f, 0.0f, // bottom-left
+                // Bottom face
+                -0.5f, -0.5f, -0.5f,  0.0f, 1.0f, // top-right
+                0.5f, -0.5f, -0.5f,  1.0f, 1.0f, // top-left
+                0.5f, -0.5f,  0.5f,  1.0f, 0.0f, // bottom-left
+                0.5f, -0.5f,  0.5f,  1.0f, 0.0f, // bottom-left
+                -0.5f, -0.5f,  0.5f,  0.0f, 0.0f, // bottom-right
+                -0.5f, -0.5f, -0.5f,  0.0f, 1.0f, // top-right
+                // Top face
+                -0.5f,  0.5f, -0.5f,  0.0f, 1.0f, // top-left
+                0.5f,  0.5f,  0.5f,  1.0f, 0.0f, // bottom-right
+                0.5f,  0.5f, -0.5f,  1.0f, 1.0f, // top-right
+                0.5f,  0.5f,  0.5f,  1.0f, 0.0f, // bottom-right
+                -0.5f,  0.5f, -0.5f,  0.0f, 1.0f, // top-left
+                -0.5f,  0.5f,  0.5f,  0.0f, 0.0f  // bottom-left
         };
 
         float[] planeVertices = {
@@ -237,6 +237,7 @@ public class Window {
         shader.setUniform("model", model);
         Renderer.draw(planeVAO, shader, planeTexture);
 
+        glEnable(GL_CULL_FACE);
         model = new Matrix4f().translate(-1.0f, 0.0f, -1.0f);
         shader.setUniform("model", model);
         Renderer.draw(cubeVAO, shader, cubeTexture);
@@ -246,6 +247,7 @@ public class Window {
         shader.setUniform("model", model);
         Renderer.draw(cubeVAO, shader, cubeTexture);
         //Renderer.drawWithOutline(cubeVAO, shader, cubeTexture, shaderSingleColor, model);
+        glDisable(GL_CULL_FACE);
 
         PriorityQueue<VegetationDistance> orderedVegetation = new PriorityQueue<>(Collections.reverseOrder());
         for (Vector3f v : vegetation) {
