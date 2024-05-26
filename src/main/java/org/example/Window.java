@@ -13,6 +13,7 @@ import org.joml.Math;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 import org.lwjgl.opengl.GL;
+import org.lwjgl.opengl.GL30;
 
 import java.util.Collections;
 import java.util.Map;
@@ -21,6 +22,7 @@ import java.util.TreeMap;
 
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL30.*;
 
 public class Window {
     private final long window;
@@ -46,6 +48,7 @@ public class Window {
     private Texture planeTexture;
     private Texture windowTexture;
     private Vector3f[] vegetation;
+    VertexArray quadVAO;
 
     private ShaderProgram shaderSingleColor;
     public Window() {
@@ -194,6 +197,37 @@ public class Window {
         glEnable(GL_STENCIL_TEST);
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+        int fbo = glGenFramebuffers();
+        glBindFramebuffer(GL_FRAMEBUFFER, fbo);
+
+        Texture fbTexture = new Texture(width, height);
+        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, fbTexture.id(), 0);
+
+        int rbo = glGenRenderbuffers();
+        glBindRenderbuffer(GL_RENDERBUFFER, rbo);
+        glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, width, height);
+        glBindRenderbuffer(GL_RENDERBUFFER, 0);
+        glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, rbo);
+
+        if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
+            throw new RuntimeException("Couldn't initialize the framebuffer properly");
+        }
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+        float[] quadVertices = {
+                -1, -1, 0, 0, 0,
+                1, -1, 0, 1, 0,
+                -1, 1, 0, 0, 1,
+
+                -1, 1, 0, 0, 1,
+                1, -1, 0, 1, 0,
+                1, 1, 0, 1, 1
+        };
+
+        VertexBuffer quadBuffer = new VertexBuffer.Builder().add(quadVertices).build();
+        BufferLayout quadLayout = new BufferLayout.Builder().addFloats(3).addFloats(2).build();
+        quadVAO = new VertexArray(quadBuffer, quadLayout);
     }
 
     private Model backpack;
