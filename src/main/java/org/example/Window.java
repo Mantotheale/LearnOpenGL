@@ -3,11 +3,9 @@ package org.example;
 import org.example.renderer.Model;
 import org.example.renderer.Renderer;
 import org.example.renderer.buffer.BufferLayout;
-import org.example.renderer.buffer.IndexBuffer;
 import org.example.renderer.buffer.VertexArray;
 import org.example.renderer.buffer.VertexBuffer;
 import org.example.renderer.shader.FragmentShader;
-import org.example.renderer.shader.Shader;
 import org.example.renderer.shader.ShaderProgram;
 import org.example.renderer.shader.VertexShader;
 import org.example.renderer.texture.Texture;
@@ -15,6 +13,11 @@ import org.joml.Math;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 import org.lwjgl.opengl.GL;
+
+import java.util.Collections;
+import java.util.Map;
+import java.util.PriorityQueue;
+import java.util.TreeMap;
 
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.*;
@@ -26,6 +29,7 @@ public class Window {
 
     private VertexArray cubeVAO;
     private VertexArray planeVAO;
+    private VertexArray transparentVAO;
     private ShaderProgram shader;
     private ShaderProgram lightShader;
     private Vector3f lightPosition;
@@ -40,6 +44,8 @@ public class Window {
     private final Camera camera = new Camera();
     private Texture cubeTexture;
     private Texture planeTexture;
+    private Texture windowTexture;
+    private Vector3f[] vegetation;
 
     private ShaderProgram shaderSingleColor;
     public Window() {
@@ -134,6 +140,17 @@ public class Window {
                 5.0f, -0.5f, -5.0f,  2.0f, 2.0f
         };
 
+        float[] transparentVertices = {
+                // positions         // texture Coords (swapped y coordinates because texture is flipped upside down)
+                0.0f,  0.5f,  0.0f,  0.0f,  1.0f,
+                0.0f, -0.5f,  0.0f,  0.0f,  0.0f,
+                1.0f, -0.5f,  0.0f,  1.0f,  0.0f,
+
+                0.0f,  0.5f,  0.0f,  0.0f,  1.0f,
+                1.0f, -0.5f,  0.0f,  1.0f,  0.0f,
+                1.0f,  0.5f,  0.0f,  1.0f,  1.0f
+        };
+
         BufferLayout cubeLayout = new BufferLayout.Builder().addFloats(3).addFloats(2).build();
         VertexBuffer cubeVBO = new VertexBuffer.Builder().add(cubeVertices).build();
         cubeVAO = new VertexArray(cubeVBO, cubeLayout);
@@ -141,6 +158,10 @@ public class Window {
         BufferLayout planeLayout = new BufferLayout.Builder().addFloats(3).addFloats(2).build();
         VertexBuffer planeVBO = new VertexBuffer.Builder().add(planeVertices).build();
         planeVAO = new VertexArray(planeVBO, planeLayout);
+
+        BufferLayout transparentLayout = new BufferLayout.Builder().addFloats(3).addFloats(2).build();
+        VertexBuffer transparentVBO = new VertexBuffer.Builder().add(transparentVertices).build();
+        transparentVAO = new VertexArray(transparentVBO, transparentLayout);
 
         String vertexShaderPath = "src/main/resources/shaders/vertexShader.glsl";
         String fragmentShaderPath = "src/main/resources/shaders/fragmentShader.glsl";
@@ -156,18 +177,34 @@ public class Window {
 
         cubeTexture = new Texture("src/main/resources/images/marble.jpg", "a");
         planeTexture = new Texture("src/main/resources/images/metal.png", "b");
+        windowTexture = new Texture("src/main/resources/images/blending_transparent_window.png", "c");
 
         shader.setUniform("texture1", 0);
-        //shader.setUniform("near", 0.1f);
-        //shader.setUniform("far", 100f);
+
+        vegetation = new Vector3f[]{
+                new Vector3f(-1.5f,  0.0f, -0.48f),
+                new Vector3f( 1.5f,  0.0f,  0.51f),
+                new Vector3f( 0.0f,  0.0f,  0.7f),
+                new Vector3f(-0.3f,  0.0f, -2.3f),
+                new Vector3f(0.5f,  0.0f, -0.6f)
+        };
 
         Renderer.setClearColor(0, 0, 0, 1);
 
         glEnable(GL_STENCIL_TEST);
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     }
 
     private Model backpack;
     private ShaderProgram backpackShader;
+
+    private record VegetationDistance(float distance, Vector3f position) implements Comparable<VegetationDistance> {
+        @Override
+        public int compareTo(VegetationDistance o) {
+            return Float.compare(this.distance, o.distance);
+        }
+    }
 
     private void loop() {
         double currentFrame = glfwGetTime();
@@ -201,10 +238,25 @@ public class Window {
         Renderer.draw(planeVAO, shader, planeTexture);
 
         model = new Matrix4f().translate(-1.0f, 0.0f, -1.0f);
-        Renderer.drawWithOutline(cubeVAO, shader, cubeTexture, shaderSingleColor, model);
+        shader.setUniform("model", model);
+        Renderer.draw(cubeVAO, shader, cubeTexture);
+        //Renderer.drawWithOutline(cubeVAO, shader, cubeTexture, shaderSingleColor, model);
 
         model = new Matrix4f().translate(2.0f, 0.0f, 0f);
-        Renderer.drawWithOutline(cubeVAO, shader, cubeTexture, shaderSingleColor, model);
+        shader.setUniform("model", model);
+        Renderer.draw(cubeVAO, shader, cubeTexture);
+        //Renderer.drawWithOutline(cubeVAO, shader, cubeTexture, shaderSingleColor, model);
+
+        PriorityQueue<VegetationDistance> orderedVegetation = new PriorityQueue<>(Collections.reverseOrder());
+        for (Vector3f v : vegetation) {
+            orderedVegetation.add(new VegetationDistance(camera.position().sub(v, new Vector3f()).length(), v));
+        }
+
+        while (!orderedVegetation.isEmpty()) {
+            model = new Matrix4f().translate(orderedVegetation.poll().position);
+            shader.setUniform("model", model);
+            Renderer.draw(transparentVAO, shader, windowTexture);
+        }
 
         glfwSwapBuffers(window);
         glfwPollEvents();
